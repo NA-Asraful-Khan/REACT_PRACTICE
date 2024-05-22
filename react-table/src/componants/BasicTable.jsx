@@ -4,7 +4,7 @@ import MOCK_DATA from './MOCK_DATA.json'
 import { COLUMNS , GROUPED_COLUMNS} from './columns'
 export const BasicTable = () => {
 
-    const columns = useMemo(() => GROUPED_COLUMNS, [])
+    const columns = useMemo(() => COLUMNS, [])
     const data = useMemo(() => MOCK_DATA, [])
 
     const {
