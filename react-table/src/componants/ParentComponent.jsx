@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { FilteringTable } from './FilteringTable';
 import { ColumnFilter } from './ColumnFilter';
 import { COLUMNS } from './columns';
+import { PaginationTable } from './PaginationTable';
 
 export const ParentComponent = () => {
     const [columnFilters, setColumnFilters] = useState(

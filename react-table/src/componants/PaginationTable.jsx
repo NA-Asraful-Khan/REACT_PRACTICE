@@ -1,54 +1,47 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useTable, useSortBy, useGlobalFilter, useFilters } from 'react-table';
+import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import { COLUMNS } from './columns';
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnFilter } from './ColumnFilter';
 
-export const FilteringTable = ({ setColumnFilters }) => {
+export const PaginationTable = () => {
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => MOCK_DATA, []);
     const [sortDirection, setSortDirection] = useState('desc');
+    
 
-    const defaultColumn = useMemo(()=>{
-        return{
-            Filter:ColumnFilter
-        }
-    })
+    const defaultColumn = useMemo(() => ({
+        Filter: ColumnFilter
+    }), []);
 
     const {
         getTableProps,
         getTableBodyProps,
         footerGroups,
         headerGroups,
-        rows,
+        page,
         prepareRow,
-        state,
+        setPageSize,
+        state: { globalFilter, pageIndex, pageSize },
         setGlobalFilter,
-        setFilter,
+        gotoPage,
+        nextPage,
+        previousPage,
+        pageCount,
+        canPreviousPage,
+        canNextPage,
     } = useTable(
         {
             columns,
             data,
-            initialState: {
-                sortBy: [],
-            },
+            initialState: { pageIndex: 0, pageSize: 10 }, // Initial pagination state
             defaultColumn
         },
-        useFilters,
         useGlobalFilter,
-        useSortBy
+        useSortBy,
+        usePagination
     );
-
-    useEffect(() => {
-        setColumnFilters((filters) => {
-            filters.forEach(({ id, value }) => {
-                setFilter(id, value);
-            });
-        });
-    }, [setFilter, setColumnFilters]);
-
-    const { globalFilter } = state;
 
     const handleSort = (column) => {
         setSortDirection((prevDirection) => (prevDirection === 'desc' ? 'asc' : 'desc'));
@@ -82,7 +75,7 @@ export const FilteringTable = ({ setColumnFilters }) => {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {rows.map((row) => {
+                    {page.map((row) => {
                         prepareRow(row);
                         return (
                             <tr {...row.getRowProps()}>
@@ -103,6 +96,33 @@ export const FilteringTable = ({ setColumnFilters }) => {
                     ))}
                 </tfoot>
             </table>
+            {/* Pagination Controls */}
+            <div>
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    Previous
+                </button>
+                <span>
+                    Page{' '}
+                    <strong>
+                        {pageIndex + 1} of {pageCount}
+                    </strong>{' '}
+                </span>
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                    Next
+                </button>
+                <select
+                    value={pageSize}
+                    onChange={(e) => {
+                        setPageSize(Number(e.target.value));
+                    }}
+                >
+                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </>
     );
 };
