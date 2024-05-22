@@ -10,6 +10,12 @@ export const FilteringTable = ({ setColumnFilters }) => {
     const data = useMemo(() => MOCK_DATA, []);
     const [sortDirection, setSortDirection] = useState('desc');
 
+    const defaultColumn = useMemo(()=>{
+        return{
+            Filter:ColumnFilter
+        }
+    })
+
     const {
         getTableProps,
         getTableBodyProps,
