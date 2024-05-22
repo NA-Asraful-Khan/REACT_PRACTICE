@@ -10,14 +10,16 @@ export const BasicTable = () => {
     const {
         getTableProps,
         getTableBodyProps,
+        footerGroups,
         headerGroups,
         rows,
         prepareRow
     } = useTable({
         columns,
-        data}) 
+        data
+    })
 
-        
+
     return (
         <table {...getTableProps()}>
             <thead>
@@ -31,19 +33,36 @@ export const BasicTable = () => {
             </thead>
             <tbody {...getTableBodyProps()}>
                 {
-                    rows.map((row)=>{
+                    rows.map((row) => {
                         prepareRow(row)
-                        return(
+                        return (
                             <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) =>{
-                                       return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                    })
+                                {row.cells.map((cell) => {
+                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                })
                                 }
                             </tr>
                         )
                     })
                 }
             </tbody>
+            <tfoot>
+                {
+                    footerGroups.map((footerGroup) => (
+                        <tr {...footerGroup.getFooterGroupProps}>
+                            {
+                                footerGroup.headers.map((column) => (
+                                    <td {...column.getFooterProps}>
+                                        {
+                                            column.render('Footer')
+                                        }
+                                    </td>
+                                ))
+                            }
+                        </tr>
+                    ))
+                }
+            </tfoot>
         </table>
     )
 }
