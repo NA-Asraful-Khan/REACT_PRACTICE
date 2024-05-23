@@ -1,18 +1,21 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
+import React, { useMemo, useState } from 'react';
+import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect } from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import { COLUMNS } from './columns';
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnFilter } from './ColumnFilter';
+import { Checkbox } from './Checkbox';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export const PaginationTable = () => {
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => MOCK_DATA, []);
     const [sortDirection, setSortDirection] = useState('desc');
-    
 
     const defaultColumn = useMemo(() => ({
-        Filter: ColumnFilter
+        Filter: ColumnFilter,
     }), []);
 
     const {
@@ -20,6 +23,7 @@ export const PaginationTable = () => {
         getTableBodyProps,
         footerGroups,
         headerGroups,
+        rows,
         page,
         prepareRow,
         setPageSize,
@@ -31,31 +35,125 @@ export const PaginationTable = () => {
         pageCount,
         canPreviousPage,
         canNextPage,
+        selectedFlatRows,
     } = useTable(
         {
             columns,
             data,
             initialState: { pageIndex: 0, pageSize: 10 }, // Initial pagination state
-            defaultColumn
+            defaultColumn,
         },
-        useGlobalFilter,
-        useSortBy,
-        usePagination
+        useGlobalFilter, // Hook for global filtering
+        useSortBy, // Hook for sorting
+        usePagination, // Hook for pagination
+        useRowSelect, // Hook for row selection
+        hooks => {
+            hooks.visibleColumns.push(columns => [
+                {
+                    id: 'selection',
+                    Header: ({ getToggleAllRowsSelectedProps }) => (
+                        <Checkbox {...getToggleAllRowsSelectedProps()} />
+                    ),
+                    Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps()} />,
+                },
+                ...columns,
+            ]);
+        }
     );
 
-    const handleSort = (column) => {
-        setSortDirection((prevDirection) => (prevDirection === 'desc' ? 'asc' : 'desc'));
+    const handleSort = column => {
+        setSortDirection(prevDirection => (prevDirection === 'desc' ? 'asc' : 'desc'));
         column.toggleSortBy(sortDirection === 'desc', false);
+    };
+
+    const downloadExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(rows.map(row => row.original));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'FilteredData');
+        XLSX.writeFile(workbook, 'FilteredData.xlsx');
+    };
+
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        const tableColumn = columns.map(col => col.Header);
+        const tableRows = rows.map(row => columns.map(col => row.original[col.accessor]));
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+        });
+
+        doc.save('FilteredData.pdf');
+    };
+
+    const printData = () => {
+        const printableContent = `
+            <html>
+                <head>
+                    <title>Print Data</title>
+                    <style>
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        table, th, td {
+                            border: 1px solid black;
+                        }
+                        th, td {
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        .print-button {
+                            margin: 10px 0;
+                            padding: 10px 20px;
+                            background-color: #4CAF50;
+                            color: white;
+                            border: none;
+                            cursor: pointer;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <button class="print-button" onclick="window.print()">Print</button>
+                    <table>
+                        <thead>
+                            <tr>
+                                ${columns.map(col => `<th>${col.Header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows.map(row => `
+                                <tr>
+                                    ${columns.map(col => `<td>${row.original[col.accessor]}</td>`).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </body>
+            </html>
+        `;
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write(printableContent);
+        printWindow.document.close();
+        // Add a small delay to ensure the content is fully loaded before printing
+        printWindow.onload = () => {
+            printWindow.print();
+        };
     };
 
     return (
         <>
+            {/* Global filter component */}
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+            
+            {/* Table component */}
             <table {...getTableProps()}>
                 <thead>
-                    {headerGroups.map((headerGroup) => (
+                    {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
+                            {headerGroup.headers.map(column => (
                                 <th
                                     {...column.getHeaderProps()}
                                     onClick={() => handleSort(column)}
@@ -65,8 +163,8 @@ export const PaginationTable = () => {
                                     <span>
                                         {column.isSorted
                                             ? column.isSortedDesc
-                                                ? ' 🔽'
-                                                : ' 🔼'
+                                                ? ' 🔽' // Descending sort indicator
+                                                : ' 🔼' // Ascending sort indicator
                                             : ''}
                                     </span>
                                 </th>
@@ -75,11 +173,11 @@ export const PaginationTable = () => {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                    {page.map(row => {
                         prepareRow(row);
                         return (
                             <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => (
+                                {row.cells.map(cell => (
                                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 ))}
                             </tr>
@@ -87,18 +185,39 @@ export const PaginationTable = () => {
                     })}
                 </tbody>
                 <tfoot>
-                    {footerGroups.map((footerGroup) => (
+                    {footerGroups.map(footerGroup => (
                         <tr {...footerGroup.getFooterGroupProps()}>
-                            {footerGroup.headers.map((column) => (
+                            {footerGroup.headers.map(column => (
                                 <td {...column.getFooterProps()}>{column.render('Footer')}</td>
                             ))}
                         </tr>
                     ))}
                 </tfoot>
             </table>
-            {/* Pagination Controls */}
+
+            {/* Selected rows information */}
+            <pre>
+                <code>
+                    {JSON.stringify(
+                        {
+                            selectedFlatRows: selectedFlatRows.map(row => row.original),
+                        },
+                        null,
+                        2
+                    )}
+                </code>
+            </pre>
+
+            {/* Download buttons */}
+            <button onClick={downloadExcel}>Download Excel</button>
+            <button onClick={downloadPDF}>Download PDF</button>
+            <button onClick={printData}>Print Data</button>
+
+            {/* Pagination controls */}
             <div>
-                <button onClick={()=>gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                    {'<<'}
+                </button>
                 <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                     Previous
                 </button>
@@ -109,23 +228,28 @@ export const PaginationTable = () => {
                     </strong>{' '}
                 </span>
                 <span>
-                    |Go to page:{" "}
-                    <input type="number" defaultValue={pageIndex+1} onChange={e=>{
-                        const pageNumber = e.target.value ? Number(e.target.value)-1:0
-                        gotoPage(pageNumber)
-                    }} />
+                    | Go to page:{' '}
+                    <input
+                        style={{ width: '50px' }}
+                        type="number"
+                        defaultValue={pageIndex + 1}
+                        onChange={e => {
+                            const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
+                            gotoPage(pageNumber);
+                        }}
+                    />
                 </span>
                 <button onClick={() => nextPage()} disabled={!canNextPage}>
                     Next
                 </button>
-                <button onClick={()=>gotoPage(pageCount-1)} disabled={!canNextPage}>{'>>'}</button>
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                    {'>>'}
+                </button>
                 <select
                     value={pageSize}
-                    onChange={(e) => {
-                        setPageSize(Number(e.target.value));
-                    }}
+                    onChange={e => setPageSize(Number(e.target.value))}
                 >
-                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                    {[10, 20, 30, 40, 50].map(pageSize => (
                         <option key={pageSize} value={pageSize}>
                             Show {pageSize}
                         </option>
