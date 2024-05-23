@@ -4,11 +4,15 @@ import { HomePage } from './components/Home.page'
 import { RQSuperHeroesPage } from './components/RQSuperHeroes.page'
 import { SuperHeroesPage } from './components/SuperHeroes.page'
 import Navbar from './components/Navbar/Navbar'
+import {QueryClientProvider,QueryClient} from 'react-query'
+
+const queryClient = new QueryClient();
 
 function App() {
 
   return (
     <>
+  <QueryClientProvider client={queryClient}> 
       <BrowserRouter>
         <Navbar></Navbar>
         <Routes>
@@ -18,6 +22,7 @@ function App() {
           <Route path="/rq-super-heroes" element={<RQSuperHeroesPage />} />
         </Routes>
       </BrowserRouter>
+      </QueryClientProvider>
     </>
   )
 }
