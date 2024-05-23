@@ -2,17 +2,17 @@
     "superheroes": [
       {
         "id": 1,
-        "name": "Batman",
+        "name": "Batman Dark Return",
         "alterEgo": "Bruce Wayne"
       },
       {
         "id": 2,
-        "name": "Superman",
+        "name": "Superman Man of Steel",
         "alterEgo": "Clark Kent"
       },
       {
         "id": 3,
-        "name": "Wonder Woman",
+        "name": "Wonder Woman 3",
         "alterEgo": "Princess Diana"
       }
     ]
