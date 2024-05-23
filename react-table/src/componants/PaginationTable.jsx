@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect } from 'react-table';
+import { useTable, useColumnOrder, useSortBy, useGlobalFilter, usePagination, useRowSelect } from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import { COLUMNS } from './columns';
 import { GlobalFilter } from './GlobalFilter';
@@ -22,7 +22,7 @@ export const PaginationTable = () => {
     // Extract unique countries
     const uniqueCountries = useMemo(() => {
         const countries = new Set(data.map(item => item.country));
-        return Array.from(countries);
+        return Array.from(countries).sort((a, b) => b.localeCompare(a)); // Sort in descending order
     }, [data]);
 
     const filteredData = useMemo(() => {
@@ -50,6 +50,9 @@ export const PaginationTable = () => {
         canPreviousPage,
         canNextPage,
         selectedFlatRows,
+        setColumnOrder,
+        allColumns,
+        getToggleHideAllColumnsProps
     } = useTable(
         {
             columns,
@@ -57,6 +60,7 @@ export const PaginationTable = () => {
             initialState: { pageIndex: 0, pageSize: 10 }, // Initial pagination state
             defaultColumn,
         },
+        useColumnOrder,// Hook for Column Ordering
         useGlobalFilter, // Hook for global filtering
         useSortBy, // Hook for sorting
         usePagination, // Hook for pagination
@@ -74,12 +78,12 @@ export const PaginationTable = () => {
             ]);
         }
     );
-
+    // Sorting by column on click 
     const handleSort = column => {
         setSortDirection(prevDirection => (prevDirection === 'desc' ? 'asc' : 'desc'));
         column.toggleSortBy(sortDirection === 'desc', false);
     };
-
+    // Download Functionality 
     const downloadExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(rows.map(row => row.original));
         const workbook = XLSX.utils.book_new();
@@ -156,9 +160,28 @@ export const PaginationTable = () => {
             printWindow.print();
         };
     };
+    // Change Column Order
+    const changeOrder = () => {
+        setColumnOrder(['id', 'first_name', 'last_name', 'phone', 'country', 'date_of_birth'])
+    }
 
     return (
         <>
+        {/* Column Hiding */}
+            <div>
+                {
+                    allColumns.map((column)=>(
+                        <div key={column.id}>
+                            <label>
+                                <input type="checkbox"{...column.getToggleHiddenProps()} />
+                                {column.Header}
+                            </label>
+                        </div>
+                    ))
+                }
+            </div>
+            {/* Change Column Order */}
+            <button onClick={changeOrder}>Change Column Order</button>
             {/* Country filter dropdown */}
             <div>
                 <label htmlFor="countryFilter">Filter by Country: </label>
@@ -178,8 +201,9 @@ export const PaginationTable = () => {
 
             {/* Global filter component */}
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-            
+
             {/* Table component */}
+            <div className="table-container">
             <table {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -215,7 +239,7 @@ export const PaginationTable = () => {
                         );
                     })}
                 </tbody>
-                <tfoot>
+                {/* <tfoot>
                     {footerGroups.map(footerGroup => (
                         <tr {...footerGroup.getFooterGroupProps()}>
                             {footerGroup.headers.map(column => (
@@ -223,9 +247,9 @@ export const PaginationTable = () => {
                             ))}
                         </tr>
                     ))}
-                </tfoot>
+                </tfoot> */}
             </table>
-
+            </div>
             {/* Selected rows information */}
             <pre>
                 <code>

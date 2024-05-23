@@ -1,7 +1,7 @@
 #root {
   /* max-width: 1280px; */
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
   text-align: center;
   width: 100%;
 }
@@ -69,4 +69,38 @@ table th, tfoot td {
   text-align: center;
   background-color: #4caf50;
   color: white;
+}
+
+table {
+  table-layout: auto;
+  width: 100%;  
+}
+
+/* Add CSS for styling the table */
+.table-container {
+  max-height: 500px; /* Set max height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Add CSS to make the header row sticky */
+thead th {
+  position: sticky;
+  top: 0;
+ /* Add background color for sticky header */
+  z-index: 1; /* Ensure header appears above other content */
+}
+
+/* Track */
+::-webkit-scrollbar {
+  width: 10px; /* Set the width of the scrollbar */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Set the color of the scrollbar handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Set the color of the scrollbar handle on hover */
 }
