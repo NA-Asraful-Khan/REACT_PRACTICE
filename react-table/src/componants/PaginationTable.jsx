@@ -13,10 +13,24 @@ export const PaginationTable = () => {
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => MOCK_DATA, []);
     const [sortDirection, setSortDirection] = useState('desc');
+    const [selectedCountry, setSelectedCountry] = useState('');
 
     const defaultColumn = useMemo(() => ({
         Filter: ColumnFilter,
     }), []);
+
+    // Extract unique countries
+    const uniqueCountries = useMemo(() => {
+        const countries = new Set(data.map(item => item.country));
+        return Array.from(countries);
+    }, [data]);
+
+    const filteredData = useMemo(() => {
+        if (selectedCountry) {
+            return data.filter(item => item.country === selectedCountry);
+        }
+        return data;
+    }, [data, selectedCountry]);
 
     const {
         getTableProps,
@@ -39,7 +53,7 @@ export const PaginationTable = () => {
     } = useTable(
         {
             columns,
-            data,
+            data: filteredData,
             initialState: { pageIndex: 0, pageSize: 10 }, // Initial pagination state
             defaultColumn,
         },
@@ -145,6 +159,23 @@ export const PaginationTable = () => {
 
     return (
         <>
+            {/* Country filter dropdown */}
+            <div>
+                <label htmlFor="countryFilter">Filter by Country: </label>
+                <select
+                    id="countryFilter"
+                    value={selectedCountry}
+                    onChange={e => setSelectedCountry(e.target.value)}
+                >
+                    <option value="">All Countries</option>
+                    {uniqueCountries.map(country => (
+                        <option key={country} value={country}>
+                            {country}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             {/* Global filter component */}
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
             
