@@ -10,6 +10,7 @@ import { RQSuperHeroPage } from './components/RQSuperHeroPage'
 import RQParallel from './components/RQParallel'
 import { DynamicParallelPage } from './components/DynamicParallelPage'
 import { DependentQueriesPage } from './components/DependentQueriesPage'
+import { PaginatedQueriesPage } from './components/PaginatedQueriesPage'
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/dynamic-parallel" element={<DynamicParallelPage heroIds={[1,3]}/>} />
 
           <Route path="/rq-dependent" element={<DependentQueriesPage email= 'shikhor@example.com'/>} />
+          <Route path="/rq-paginated" element={<PaginatedQueriesPage />} />
         </Routes>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} position='bottom-right'/>
