@@ -16,12 +16,12 @@ const Navbar = () => {
                     <li>
                         <NavLink to="/super-heroes" style={({ isActive }) => {
                             return { color: isActive ? "rgb(221, 74, 74)" : "black" };
-                          }}>Super Heroes Page</NavLink>
+                          }}>Super Heroes</NavLink>
                     </li>
                     <li>
                         <NavLink to="/rq-super-heroes" style={({ isActive }) => {
                             return { color: isActive ? "rgb(221, 74, 74)" : "black" };
-                          }}>React Query Super Heroes Page</NavLink>
+                          }}>RQ Super Heroes</NavLink>
                     </li>
                     <li>
                         <NavLink to="/rq-parallel" style={({ isActive }) => {
@@ -32,6 +32,11 @@ const Navbar = () => {
                         <NavLink to="/dynamic-parallel" style={({ isActive }) => {
                             return { color: isActive ? "rgb(221, 74, 74)" : "black" };
                           }}>Dynamic Parallel</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/rq-dependent" style={({ isActive }) => {
+                            return { color: isActive ? "rgb(221, 74, 74)" : "black" };
+                          }}>Dependent Queries</NavLink>
                     </li>
                 </ul>
             </nav>

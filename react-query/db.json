@@ -34,12 +34,20 @@
     {
       "id": "vishwas@example.com",
       "channelId": "codevolution"
+    },
+    {
+      "id": "shikhor@example.com",
+      "channelId": "Stit BD"
     }
   ],
   "channels": [
     {
       "id": "codevolution",
       "courses": ["react", "vue", "angular"]
+    },
+    {
+      "id": "Stit BD",
+      "courses": ["react", "Node JS","Express"]
     }
   ],
   "colors": [
