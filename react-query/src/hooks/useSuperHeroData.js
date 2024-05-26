@@ -20,12 +20,12 @@ export const useSuperHeroData = (onError, onSuccess, heroID) => {
                 }else {
                     return undefined
                 }
-            },
-            // refetchOnWindowFocus: true,
-            // refetchInterval: 15000,
-            // refetchIntervalInBackground: true,
-            // onError,
-            // onSuccess
+            }, //Data Query From Cache
+            refetchOnWindowFocus: true,
+            refetchInterval: 15000,
+            refetchIntervalInBackground: true,
+            onError,
+            onSuccess
         }
 
     )
