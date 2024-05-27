@@ -11,6 +11,11 @@ const postSuperHero=(hero)=>{
   return axios.post('http://localhost:4000/superheroes',hero)
 }
 
+// Update a superhero on the server
+const updateSuperHero = (hero) => {
+  return axios.put(`http://localhost:4000/superheroes/${hero.id}`, hero);
+};
+
 const deleteSuperHero = (heroId) => {
   return axios.delete(`http://localhost:4000/superheroes/${heroId}`)
 }
@@ -78,6 +83,35 @@ export const useCreateSuperHeroByMutation =()=>{
     }
   })
 }
+
+// Custom hook to update a superhero with optimistic update
+export const useUpdateSuperHeroByMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(updateSuperHero, {
+    // Optimistic update
+    onMutate: async (updatedHero) => {
+      await queryClient.cancelQueries('super-heros');
+      const previousHeroData = queryClient.getQueryData('super-heros');
+
+      queryClient.setQueryData('super-heros', (oldQueryData) => {
+        return {
+          ...oldQueryData,
+          data: oldQueryData.data.map(hero =>
+            hero.id === updatedHero.id ? { ...hero, ...updatedHero } : hero
+          )
+        };
+      });
+
+      return { previousHeroData };
+    },
+    onError: (_error, _hero, context) => {
+      queryClient.setQueryData('super-heros', context.previousHeroData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('super-heros');
+    }
+  });
+};
 
 
 export const useDeleteSuperHeroByMutation = () => {
