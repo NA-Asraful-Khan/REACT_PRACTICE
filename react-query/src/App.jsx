@@ -11,6 +11,7 @@ import RQParallel from './components/RQParallel'
 import { DynamicParallelPage } from './components/DynamicParallelPage'
 import { DependentQueriesPage } from './components/DependentQueriesPage'
 import { PaginatedQueriesPage } from './components/PaginatedQueriesPage'
+import { InfiniteQueriesPage } from './components/InfiniteQueriesPage'
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
 
           <Route path="/rq-dependent" element={<DependentQueriesPage email= 'shikhor@example.com'/>} />
           <Route path="/rq-paginated" element={<PaginatedQueriesPage />} />
+          <Route path="/rq-infinite" element={<InfiniteQueriesPage />} />
         </Routes>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} position='bottom-right'/>

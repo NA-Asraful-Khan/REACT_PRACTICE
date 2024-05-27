@@ -43,6 +43,11 @@ const Navbar = () => {
                             return { color: isActive ? "rgb(221, 74, 74)" : "black" };
                           }}>Paginated Queries</NavLink>
                     </li>
+                    <li>
+                        <NavLink to="/rq-infinite" style={({ isActive }) => {
+                            return { color: isActive ? "rgb(221, 74, 74)" : "black" };
+                          }}>Infinite Queries</NavLink>
+                    </li>
                 </ul>
             </nav>
 
