@@ -11,6 +11,10 @@ const postSuperHero=(hero)=>{
   return axios.post('http://localhost:4000/superheroes',hero)
 }
 
+const deleteSuperHero = (heroId) => {
+  return axios.delete(`http://localhost:4000/superheroes/${heroId}`)
+}
+
 export const useSuperHerosData=(onError,onSuccess)=>{
     return useQuery(
         'super-heros',
@@ -72,5 +76,34 @@ export const useCreateSuperHeroByMutation =()=>{
     onSettled:()=>{
       queryClient.invalidateQueries('super-heros')
     }
+  })
+}
+
+
+export const useDeleteSuperHeroByMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(deleteSuperHero, {
+    // Optimistic Update Start
+    onMutate: async (heroId) => {
+      await queryClient.cancelQueries('super-heros')
+      const previousHeroData = queryClient.getQueryData('super-heros')
+
+      queryClient.setQueryData('super-heros', (oldQueryData) => {
+        return {
+          ...oldQueryData,
+          data: oldQueryData.data.filter(hero => hero.id !== heroId)
+        }
+      })
+
+      return { previousHeroData }
+    },
+    onError: (_err, _heroId, context) => {
+      queryClient.setQueryData('super-heros', context.previousHeroData)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('super-heros')
+    }
+    // Optimistic Update End
   })
 }

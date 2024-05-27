@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom"
-import { useCreateSuperHeroByMutation, useSuperHerosData } from "../hooks/useSuperHerosData"
+import { useCreateSuperHeroByMutation, useDeleteSuperHeroByMutation, useSuperHerosData } from "../hooks/useSuperHerosData"
 import { useState } from "react"
 
 
@@ -20,9 +20,9 @@ export const RQSuperHeroesPage = () => {
 
   const {mutate:addHero, isLoading:loadingWhilePosting}= useCreateSuperHeroByMutation()
 
-  const handleAddHeroClick = (e) => {
-    e.preventDefault()
+  const {mutate:deleteHero} = useDeleteSuperHeroByMutation()
 
+  const handleAddHeroClick = () => {
     const hero ={ name, alterEgo }
     addHero(hero)
     setName('')
@@ -63,6 +63,7 @@ export const RQSuperHeroesPage = () => {
           return <>
           <div key={hero.id}>
             <Link to={`/rq-super-heroes/${hero.id}`}>{hero.name}</Link>
+            <button onClick={() => deleteHero(hero.id)}>Delete</button>
             
           </div>
           {/* {loadingWhilePosting && <p>Loading ...!</p>} */}
