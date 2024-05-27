@@ -1,32 +1,47 @@
 {
   "superheroes": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Batman",
       "alterEgo": "Bruce Wayne"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Superman",
       "alterEgo": "Clark Kent"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Wonder Woman",
       "alterEgo": "Princess Diana"
+    },
+    {
+      "id": "513d",
+      "name": "Spider Man",
+      "alterEgo": "Tom Holland"
+    },
+    {
+      "id": "f66e",
+      "name": "Aquaman",
+      "alterEgo": "Json Momoa"
+    },
+    {
+      "id": "6439",
+      "name": "d",
+      "alterEgo": "d"
     }
   ],
   "friends": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Chandler Bing"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Joey Tribbiani"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Rachel Green"
     }
   ],
@@ -43,44 +58,52 @@
   "channels": [
     {
       "id": "codevolution",
-      "courses": ["react", "vue", "angular"]
+      "courses": [
+        "react",
+        "vue",
+        "angular"
+      ]
     },
     {
       "id": "Stit BD",
-      "courses": ["react", "Node JS","Express"]
+      "courses": [
+        "react",
+        "Node JS",
+        "Express"
+      ]
     }
   ],
   "colors": [
     {
-      "id": 1,
+      "id": "1",
       "label": "red"
     },
     {
-      "id": 2,
+      "id": "2",
       "label": "blue"
     },
     {
-      "id": 3,
+      "id": "3",
       "label": "green"
     },
     {
-      "id": 4,
+      "id": "4",
       "label": "yellow"
     },
     {
-      "id": 5,
+      "id": "5",
       "label": "black"
     },
     {
-      "id": 6,
+      "id": "6",
       "label": "white"
     },
     {
-      "id": 7,
+      "id": "7",
       "label": "orange"
     },
     {
-      "id": 8,
+      "id": "8",
       "label": "purple"
     }
   ]
