@@ -14,8 +14,8 @@ const fetchuser = () => {
 
 export const InfiniteQueriesPage = () => {
 
-  const {data:allUser}=useQuery('user', fetchuser)
-  
+  const { data: allUser } = useQuery('user', fetchuser)
+
   const {
     isLoading,
     isError,
@@ -27,7 +27,7 @@ export const InfiniteQueriesPage = () => {
     isFetchingNextPage
   } = useInfiniteQuery(['queryUser'], fetchUserWithQueries, {
     getNextPageParam: (_lastPage, pages) => {
-      if (pages.length < (allUser?.data.length -1)/2) {
+      if (pages.length < (allUser?.data.length - 1) / 2) {
         return pages.length + 1
       } else {
         return undefined
@@ -59,12 +59,14 @@ export const InfiniteQueriesPage = () => {
           )
         })}
       </div>
-      <div>
-        <button onClick={() => fetchNextPage()} disabled={!hasNextPage}>
-          Load more
-        </button>
+
+      <div>{isFetching && !isFetchingNextPage ? 'Fetching...' :
+        <div>
+          <button onClick={() => fetchNextPage()} disabled={!hasNextPage}>
+            Load more
+          </button>
+        </div>}
       </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
     </>
   )
 }
