@@ -1,8 +1,11 @@
 
 import './App.css'
 import { Greet } from './componants/Greet'
+import { Heading } from './componants/Heading'
+import { Oscar } from './componants/Oscar'
 import { PersonList } from './componants/PersonList'
 import { PersonName } from './componants/PersonName'
+import { Status } from './componants/Status'
 
 function App() {
 
@@ -33,6 +36,11 @@ function App() {
       <Greet name={'Shikhor'} messageCount={10} isLoggedIn={true} />
       <PersonName name={personName}/>
       <PersonList names={nameList}/>
+      <Status status={'loading'}/>
+      <Heading>Heading Text</Heading>
+      <Oscar>
+        <Heading>Oscar Goes to Leonardo D Caprio</Heading>
+      </Oscar>
     </>
   )
 }
