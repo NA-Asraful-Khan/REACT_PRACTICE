@@ -11,13 +11,12 @@ import { PersonList } from './componants/PersonList'
 import { PersonName } from './componants/PersonName'
 import { Status } from './componants/Status'
 import { LoggedIn } from './componants/state/LoggedIn'
+import { Counter } from './componants/state/Counter'
 
 function App() {
-  const [firstTen, setFirstTen] = useState(true)
+  const [firstTen, setFirstTen] = useState(false)
+  const [secondTen, setSecondTen] = useState(true)
 
-  const handleFirstTen = () => {
-    setFirstTen(!firstTen)
-  }
   const personName = {
     first: "Bruce",
     last: "Wayne"
@@ -41,7 +40,8 @@ function App() {
   return (
 
     <>
-      <button onClick={handleFirstTen}>{!firstTen ? "Show Top 10 Componants" : "Hide Top 10 Componants"}</button>
+      <button onClick={()=>setFirstTen(!firstTen)}>{!firstTen ? "Show Top 1-11 Componants" : "Hide Top 1-11 Componants"}</button>
+      <button onClick={()=>setSecondTen(!secondTen)}>{!secondTen ? "Show Top 1-11 Componants" : "Hide Top 1-11 Componants"}</button>
       <br />
       {
         firstTen &&
@@ -64,6 +64,14 @@ function App() {
           </Oscar>
         </>
       }
+      {
+        secondTen &&
+        <>
+           <Counter/>
+        </>
+      }
+      
+     
 
 
 
