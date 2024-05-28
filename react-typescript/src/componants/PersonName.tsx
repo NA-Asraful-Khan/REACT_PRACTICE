@@ -1,14 +1,11 @@
-type PersonName = {
-    name: {
-        firstName: string,
-        lastName: string
-    }
-}
-export const PersonName = (props: PersonName) => {
+import { PersonNameProps } from "./Person.type"
+
+
+export const PersonName = (props: PersonNameProps) => {
     return (
         <>
-            <h3>First Name: {props.name.firstName}</h3>
-            <h3>Last Name: {props.name.lastName}</h3>
+            <h3>First Name: {props.name.first}</h3>
+            <h3>Last Name: {props.name.last}</h3>
         </>
     )
 }
