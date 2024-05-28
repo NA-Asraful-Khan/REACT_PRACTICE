@@ -1,4 +1,5 @@
 
+import { useState } from 'react'
 import './App.css'
 import { Button } from './componants/Button'
 import { Container } from './componants/Container'
@@ -9,11 +10,14 @@ import { Oscar } from './componants/Oscar'
 import { PersonList } from './componants/PersonList'
 import { PersonName } from './componants/PersonName'
 import { Status } from './componants/Status'
+import { LoggedIn } from './componants/state/LoggedIn'
 
 function App() {
+  const [firstTen, setFirstTen] = useState(true)
 
-  
-
+  const handleFirstTen = () => {
+    setFirstTen(!firstTen)
+  }
   const personName = {
     first: "Bruce",
     last: "Wayne"
@@ -35,22 +39,32 @@ function App() {
   ]
 
   return (
+
     <>
-      <Container styles={{border:'1px solid black',padding:'5px'}}/>
-      <Input value='qwerrwq' handleChange={(e)=> {
-        console.log(e)
-      } } />
-      <Button handleClick={(e,id)=>{
-        console.log("Clicked",e,id)
-      } }/>
-      <Greet name={'Shikhor'} messageCount={10} isLoggedIn={true} />
-      <PersonName name={personName}/>
-      <PersonList names={nameList}/>
-      <Status status={'loading'}/>
-      <Heading>Heading Text</Heading>
-      <Oscar>
-        <Heading>Oscar Goes to Leonardo D Caprio</Heading>
-      </Oscar>
+      <button onClick={handleFirstTen}>{!firstTen ? "Show Top 10 Componants" : "Hide Top 10 Componants"}</button>
+      <br />
+      {
+        firstTen &&
+        <>
+          <LoggedIn></LoggedIn>
+          <Container styles={{ border: '1px solid black', padding: '5px' }} />
+          <Input value='qwerrwq' handleChange={(e) => {
+            console.log(e)
+          }} />
+          <Button handleClick={(e, id) => {
+            console.log("Clicked", e, id)
+          }} />
+          <Greet name={'Shikhor'} messageCount={10} isLoggedIn={true} />
+          <PersonName name={personName} />
+          <PersonList names={nameList} />
+          <Status status={'loading'} />
+          <Heading>Heading Text</Heading>
+          <Oscar>
+            <Heading>Oscar Goes to Leonardo D Caprio</Heading>
+          </Oscar>
+        </>
+      }
+
 
 
     </>
