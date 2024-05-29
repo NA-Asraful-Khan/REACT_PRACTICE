@@ -12,6 +12,10 @@ import { PersonName } from './componants/PersonName'
 import { Status } from './componants/Status'
 import { LoggedIn } from './componants/state/LoggedIn'
 import { Counter } from './componants/state/Counter'
+import { ThemeContextProvider } from './componants/context/ThemeContext'
+import { Box } from './componants/context/Box'
+import { UserContextProvider } from './componants/context/UserContext'
+import { User } from './componants/context/User'
 
 function App() {
   const [firstTen, setFirstTen] = useState(false)
@@ -68,6 +72,12 @@ function App() {
         secondTen &&
         <>
            <Counter/>
+           <ThemeContextProvider>
+            <Box/>
+           </ThemeContextProvider>
+           <UserContextProvider>
+            <User/>
+           </UserContextProvider>
         </>
       }
       

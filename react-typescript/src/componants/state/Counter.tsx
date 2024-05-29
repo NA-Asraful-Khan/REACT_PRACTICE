@@ -34,7 +34,7 @@ export const Counter = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   return (
     <>
-      Count: {state.count}
+      <h2>Count: {state.count}</h2>
       <button onClick={() => dispatch({ type: 'increment', payload: 10 })}>
         Increment 10
       </button>
