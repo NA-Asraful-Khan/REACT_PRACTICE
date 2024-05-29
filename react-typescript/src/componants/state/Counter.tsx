@@ -33,7 +33,7 @@ function reducer(state: CounterState, action: CounterAction) {
 export const Counter = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   return (
-    <>
+    <div style={{ margin: '15px', border: '1px solid black' }}>
       <h2>Count: {state.count}</h2>
       <button onClick={() => dispatch({ type: 'increment', payload: 10 })}>
         Increment 10
@@ -42,6 +42,6 @@ export const Counter = () => {
         Decrement 10
       </button>
       <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
-    </>
+    </div>
   )
 }

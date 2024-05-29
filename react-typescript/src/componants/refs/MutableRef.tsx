@@ -19,7 +19,7 @@ export const MutableRef = () => {
   }, [])
 
   return (
-    <div>
+    <div style={{ margin: '15px', border: '1px solid black' }}>
       HookTimer - {timer} -
       <button onClick={() => stopTimer()}>Stop Timer</button>
     </div>

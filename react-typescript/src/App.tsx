@@ -17,6 +17,7 @@ import { Box } from './componants/context/Box'
 import { UserContextProvider } from './componants/context/UserContext'
 import { User } from './componants/context/User'
 import { MutableRef } from './componants/refs/MutableRef'
+import { ClassCounter } from './componants/class/ClassCounter'
 
 function App() {
   const [firstTen, setFirstTen] = useState(false)
@@ -81,6 +82,7 @@ function App() {
            </UserContextProvider>
 
            <MutableRef/>
+           <ClassCounter message='The Count Value Is'/>
         </>
       }
       
