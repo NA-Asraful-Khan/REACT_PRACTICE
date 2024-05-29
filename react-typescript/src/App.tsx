@@ -16,6 +16,7 @@ import { ThemeContextProvider } from './componants/context/ThemeContext'
 import { Box } from './componants/context/Box'
 import { UserContextProvider } from './componants/context/UserContext'
 import { User } from './componants/context/User'
+import { MutableRef } from './componants/refs/MutableRef'
 
 function App() {
   const [firstTen, setFirstTen] = useState(false)
@@ -78,6 +79,8 @@ function App() {
            <UserContextProvider>
             <User/>
            </UserContextProvider>
+
+           <MutableRef/>
         </>
       }
       
