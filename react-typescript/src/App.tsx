@@ -18,10 +18,33 @@ import { UserContextProvider } from './componants/context/UserContext'
 import { User } from './componants/context/User'
 import { MutableRef } from './componants/refs/MutableRef'
 import { ClassCounter } from './componants/class/ClassCounter'
+import { Private } from './componants/auth/Private'
+import { Profile } from './componants/auth/Profile'
+import { List } from './componants/generics/List'
+import { RandomNumber } from './componants/restriction/RandomNumber'
+import { Toast } from './componants/templateLiterals/Toast'
 
 function App() {
   const [firstTen, setFirstTen] = useState(false)
   const [secondTen, setSecondTen] = useState(true)
+  const [thirdTen, setThirdTen] = useState(true)
+  const heroDetails =[
+    {
+      id: 1,
+      first: 'Bruce',
+      last: 'Wayne'
+    },
+    {
+      id: 2,
+      first: 'Clark',
+      last: 'Kent'
+    },
+    {
+      id: 3,
+      first: 'Princess',
+      last: 'Diana'
+    }
+  ]
 
   const personName = {
     first: "Bruce",
@@ -46,8 +69,9 @@ function App() {
   return (
 
     <>
-      <button onClick={()=>setFirstTen(!firstTen)}>{!firstTen ? "Show Top 1-11 Componants" : "Hide Top 1-11 Componants"}</button>
-      <button onClick={()=>setSecondTen(!secondTen)}>{!secondTen ? "Show Top 1-11 Componants" : "Hide Top 1-11 Componants"}</button>
+      <button onClick={() => setFirstTen(!firstTen)}>{!firstTen ? "Show Top 1-11 Componants" : "Hide Top 1-11 Componants"}</button>
+      <button onClick={() => setSecondTen(!secondTen)}>{!secondTen ? "Show Top 12-21 Componants" : "Hide Top 12-21 Componants"}</button>
+      <button onClick={() => setThirdTen(!thirdTen)}>{!thirdTen ? "Show Top 20-Rest Componants" : "Hide Top 20-Rest Componants"}</button>
       <br />
       {
         firstTen &&
@@ -73,23 +97,35 @@ function App() {
       {
         secondTen &&
         <>
-           <Counter/>
-           <ThemeContextProvider>
-            <Box/>
-           </ThemeContextProvider>
-           <UserContextProvider>
-            <User/>
-           </UserContextProvider>
+          <Counter />
+          <ThemeContextProvider>
+            <Box />
+          </ThemeContextProvider>
+          <UserContextProvider>
+            <User />
+          </UserContextProvider>
 
-           <MutableRef/>
-           <ClassCounter message='The Count Value Is'/>
+          <MutableRef />
+          <ClassCounter message='The Count Value Is' />
+          <Private isLoggedIn={true} component={Profile} />
+          
+
+          <List
+            items={heroDetails}
+            onClick={item => console.log(item)}
+          />
+
+          <RandomNumber value={10} isPositive/>
+
         </>
       }
-      
-     
 
-
-
+      {
+        thirdTen && 
+        <>
+        <Toast position={'center-bottom'}/>
+        </>
+      }
     </>
   )
 }
