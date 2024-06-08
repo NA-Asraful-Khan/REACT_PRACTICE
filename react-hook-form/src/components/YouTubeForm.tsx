@@ -1,5 +1,6 @@
-import { useForm } from "react-hook-form"
+import { useForm ,useFieldArray} from "react-hook-form"
 import { DevTool } from "@hookform/devtools"
+import { useEffect } from "react"
 
 type FormValues = {
   username: string,
@@ -9,7 +10,12 @@ type FormValues = {
     twitter: string,
     facebook: string
   },
-  phoneNumbers: string[];
+  phoneNumbers: string[],
+  phNumbers:{
+    number:string
+  }[],
+  age:number,
+  dob: Date,
 }
 
 
@@ -30,22 +36,45 @@ export const YouTubeForm = () => {
         phoneNumbers: [
           "", ""
         ],
+        phNumbers:[
+          {number:''}
+        ],
+        age:0,
+        dob:new Date()
       }
     }
   })
-  const { register, control, handleSubmit, formState } = form
+  const { register, control, handleSubmit, formState ,watch,getValues} = form
   const { errors } = formState
+
+  const {fields,append,remove}=useFieldArray({
+    name:'phNumbers',
+    control
+  })
 
   const submitForm = (data: FormValues) => {
     console.log('Form Submitted', data)
   }
   
+  // const watchUserName = watch("username")
+  const watchForm = watch()
+  useEffect(()=>{
+    const subscription = watch((value)=>{
+      console.log(value)
+    })
+    return () =>subscription.unsubscribe()
+  },[watch])
+
+  const handleGetValues = ()=>{
+    console.log("Get Values", getValues())
+  }
+
 
   renderCount++
   return (
     <div>
       <h1>YouTube Form ({renderCount})</h1>
-
+      <h2>Watched Values:{JSON.stringify(watchForm)}</h2>
       <form onSubmit={handleSubmit(submitForm)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
@@ -89,6 +118,32 @@ export const YouTubeForm = () => {
           <p className="error">{errors.channel?.message}</p>
         </div>
 
+        {/* Date  */}
+
+        <div className="form-control">
+          <label htmlFor="age">Age</label>
+          <input type="number" id="age" {...register('age', {
+            required: 'Age is erquired',
+            valueAsNumber:true
+          })} />
+          <p className="error">{errors.age?.message}</p>
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="dob">Date Of Birth</label>
+          <input type="date" id="dob" {...register('dob', {
+            required: {
+              value:true,
+              message: "Date of Birth Is required"
+            },
+            valueAsDate:true
+          })} />
+          <p className="error">{errors.age?.message}</p>
+        </div>
+
+
+        {/* Social  */}
+
         <div className="form-control">
           <label htmlFor="twitter">Twitter</label>
           <input type="text" id="twitter" {...register('social.twitter', {
@@ -103,6 +158,8 @@ export const YouTubeForm = () => {
           <input type="text" id="facebook" {...register('social.facebook')} />
         </div>
 
+        {/* Phone Number  */}
+
         <div className="form-control">
           <label htmlFor="primariPhone">Primary Number</label>
           <input type="text" id="primariPhone" {...register('phoneNumbers.0')} />
@@ -115,7 +172,30 @@ export const YouTubeForm = () => {
           })} />
         </div>
         <p className="error">{errors.phoneNumbers?.[1]?.message}</p>
+
+
+          <div>
+            <label>List of phone numbers</label>
+            <div>
+              {fields.map((field,index)=>{
+                return(
+                  <div className="form-control" key={field.id}>
+                    <input type="text"{...register(`phNumbers.${index}.number`as const)} />
+                    {index> 0 && (
+                      <button type="button" onClick={()=> remove(index)}>Remove</button>
+                    )}
+                  </div>
+                )
+              })}
+
+              <button type="button" onClick={()=> append({number:""})}>Add Phone Number</button>
+            </div>
+          </div>
+
+          
+
         <button>Submit</button>
+        <button type="button" onClick={handleGetValues}>Get Values</button>
       </form>
   
       <DevTool control={control} />
