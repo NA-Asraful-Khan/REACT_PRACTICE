@@ -11,6 +11,11 @@ label {
   margin-bottom: 5px;
 }
 
+form{
+  display: grid;
+  justify-content: center;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="number"],
@@ -33,4 +38,8 @@ input[type="date"] {
 
 .form-control {
   margin-bottom: 20px;
+}
+
+button{
+  margin: 5px;
 }

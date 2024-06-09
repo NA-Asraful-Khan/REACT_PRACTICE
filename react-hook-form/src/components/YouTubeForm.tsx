@@ -1,4 +1,4 @@
-import { useForm ,useFieldArray} from "react-hook-form"
+import { useForm ,useFieldArray, FieldErrors} from "react-hook-form"
 import { DevTool } from "@hookform/devtools"
 import { useEffect } from "react"
 
@@ -15,7 +15,7 @@ type FormValues = {
     number:string
   }[],
   age:number,
-  dob: Date,
+  dob: string,
 }
 
 
@@ -40,12 +40,14 @@ export const YouTubeForm = () => {
           {number:''}
         ],
         age:0,
-        dob:new Date()
+        dob: new Date().toISOString().split('T')[0]
       }
-    }
+    },
+    mode:"all"
   })
-  const { register, control, handleSubmit, formState ,watch,getValues} = form
-  const { errors } = formState
+  const { register, control, handleSubmit, formState ,watch,getValues,setValue,reset} = form
+  const { errors,isDirty,isValid,isSubmitSuccessful,isSubmitting } = formState
+  
 
   const {fields,append,remove}=useFieldArray({
     name:'phNumbers',
@@ -54,6 +56,10 @@ export const YouTubeForm = () => {
 
   const submitForm = (data: FormValues) => {
     console.log('Form Submitted', data)
+  }
+
+  const onError =(errors:FieldErrors<FormValues>)=>{
+    console.log("Form Errors", errors)
   }
   
   // const watchUserName = watch("username")
@@ -69,13 +75,27 @@ export const YouTubeForm = () => {
     console.log("Get Values", getValues())
   }
 
+  const handleSetValues = ()=>{
+    setValue("username","",{
+      shouldValidate:true,
+      shouldDirty:true,
+      shouldTouch:true
+    })
+  }
+
+  useEffect(()=>{
+    if(isSubmitSuccessful){
+      reset()
+    }
+  },[isSubmitSuccessful,reset])
+
 
   renderCount++
   return (
     <div>
       <h1>YouTube Form ({renderCount})</h1>
       <h2>Watched Values:{JSON.stringify(watchForm)}</h2>
-      <form onSubmit={handleSubmit(submitForm)} noValidate>
+      <form onSubmit={handleSubmit(submitForm,onError)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
@@ -103,7 +123,15 @@ export const YouTubeForm = () => {
                 return (
                   !fieldValue.endsWith("baddomain.com") || "This Domain is not supported"
                 )
-              }
+              },
+              emailAvailable: async (fieldValue) => {
+                const response = await fetch(
+                  `https://jsonplaceholder.typicode.com/users?email=${fieldValue}`
+                );
+                const data = await response.json();
+                return data.length === 0 || "Email already exists";
+              },
+      
             },
 
           })} />
@@ -147,10 +175,8 @@ export const YouTubeForm = () => {
         <div className="form-control">
           <label htmlFor="twitter">Twitter</label>
           <input type="text" id="twitter" {...register('social.twitter', {
-            required: 'This field is erquired'
+            disabled:watch("channel")!==""
           })} />
-
-          <p className="error">{errors.social?.twitter?.message}</p>
         </div>
 
         <div className="form-control">
@@ -194,8 +220,16 @@ export const YouTubeForm = () => {
 
           
 
-        <button>Submit</button>
+        <div>
+        <button disabled={!isDirty || !isValid ||isSubmitting}>Submit</button>
+        <button type="button" onClick={()=>reset()}>Reset</button>
+        </div>
+
+        <div>
         <button type="button" onClick={handleGetValues}>Get Values</button>
+        <button type="button" onClick={handleSetValues}>Set Values</button>
+        </div>
+        
       </form>
   
       <DevTool control={control} />
